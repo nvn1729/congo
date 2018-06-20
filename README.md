@@ -1,6 +1,6 @@
 # Congo - Concurrency Primitives for Go
 
-Package congo includes a CountDownLatch primitive, similar to [what's available](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/CountDownLatch.html) in the `java.util.concurrent` package. A CountDownLatch is useful for signaling the completion of the one or more events occurring across multiple goroutines.
+Package congo includes a CountDownLatch primitive, similar to what's available in the [`java.util.concurrent` package](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/CountDownLatch.html). A CountDownLatch is useful for signaling the completion of the one or more events occurring across multiple goroutines.
 
 ## Usage
 
@@ -41,7 +41,7 @@ Count down complete
 `CountDownLatch` is similar to `WaitGroup` in the standard Go `sync` package with a few notable differences:
 
 * Caller can wait with a timeout (`WaitTimeout`) for the count down to complete.
-* Couple of extra ways to `CountDown` using `WeightedCountDown` and `Complete`.
+* Couple of extra ways to `CountDown`:
   * `WeightedCountDown` reduces the remaining count by a specified number.
   * `Complete` reduces the remaining count to 0 and signals any waiting goroutines immediately.
 * The starting count is set once at the time of creating the CountDownLatch. This avoids the potential for misuse of the `WaitGroup.Add` function, which should only be invoked in the main goroutine.
