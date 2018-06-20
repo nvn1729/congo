@@ -45,3 +45,8 @@ Count down complete
   * `WeightedCountDown` reduces the remaining count by a specified number.
   * `Complete` reduces the remaining count to 0 and signals any waiting goroutines immediately.
 * The starting count is set once at the time of creating the CountDownLatch. This avoids the potential for misuse of the `WaitGroup.Add` function, which should only be invoked in the main goroutine.
+
+
+## Documentation
+
+Available [here](https://godoc.org/github.com/nvn1729/congo) at godoc.org.
