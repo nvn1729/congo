@@ -49,4 +49,5 @@ Count down complete
 
 ## Documentation
 
-Available [here](https://godoc.org/github.com/nvn1729/congo) at godoc.org.
+[![GoDoc](https://godoc.org/github.com/nvn1729/congo?status.svg)](https://godoc.org/github.com/nvn1729/congo)
+
