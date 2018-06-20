@@ -1,13 +1,38 @@
-package latch
+package congo
 
 import (
 	"testing"
 	"time"
-	//"fmt"
+	"fmt"
 )
 
-func TestZero(t *testing.T) {
-	latch := New(0)
+func ExampleCountDownLatch() {
+	latch := NewCountDownLatch(3)
+	for i := 0; i < 3; i++ {
+		go func() {
+			// do work
+			// ...
+			fmt.Println("Counting down")
+			latch.CountDown() // done with work
+		} ()
+	}
+	
+	
+	if (latch.WaitTimeout(5*time.Second)) {
+		fmt.Println("Count down complete")
+	} else {
+		fmt.Println("Count down not complete")
+	}
+	// Output:
+	// Counting down
+	// Counting down
+	// Counting down
+	// Count down complete
+}
+
+
+func TestCountDownLatch_zero(t *testing.T) {
+	latch := NewCountDownLatch(0)
 
 	// check 0 count
 	assertEqual(t, uint(0), latch.Count())
@@ -23,8 +48,8 @@ func TestZero(t *testing.T) {
 	assertEqual(t, true, latch.WaitTimeout(time.Second))
 }
 
-func TestOne(t *testing.T) {
-	latch := New(1)
+func TestCountDownLatch_one(t *testing.T) {
+	latch := NewCountDownLatch(1)
 
 	// check count of 1
 	assertEqual(t, uint(1), latch.Count())
@@ -50,13 +75,13 @@ func TestOne(t *testing.T) {
 	assertEqual(t, true, latch.WaitTimeout(time.Second))
 }
 
-func TestOneAsync(t *testing.T) {
-	latch := New(1)
+func TestCountDownLatch_oneasync(t *testing.T) {
+	latch := NewCountDownLatch(1)
 
-	go func(d time.Duration, latch *CountDownLatch) {
-		time.Sleep(d)
+	go func() {
+		time.Sleep(time.Second)
 		latch.CountDown()
-	} (time.Second, latch)
+	} ()
 
 	// WaitTimeout should return false because count down will take place after a second
 	assertEqual(t, false, latch.WaitTimeout(100*time.Millisecond))
@@ -71,11 +96,37 @@ func TestOneAsync(t *testing.T) {
 	assertEqual(t, true, latch.WaitTimeout(100*time.Millisecond))
 }
 
-func TestManyAsync(t *testing.T) {
+func TestCountDownLatch_complete(t *testing.T) {
+	latch1 := NewCountDownLatch(0)
+	latch2 := NewCountDownLatch(1)
+	latch3 := NewCountDownLatch(1e6)
+
+	assertNotNil(t, latch1.Complete())
+
+	assertNil(t, latch2.Complete())
+	assertEqual(t, uint(0), latch2.Count())
+	assertNotNil(t, latch2.Complete())
+
+	latch4 := NewCountDownLatch(1)
+	go func() {
+		latch3.Wait()
+		latch4.CountDown()
+	}()
+	assertNil(t, latch3.WeightedCountDown(3e5))
+	assertEqual(t, false, latch4.WaitTimeout(500*time.Millisecond)) // test will pause half a second
+	assertEqual(t, uint(7e5), latch3.Count())
+	assertEqual(t, uint(1), latch4.Count())
+	assertNil(t, latch3.Complete())
+	assertEqual(t, true, latch4.WaitTimeout(time.Second))
+	assertEqual(t, uint(0), latch3.Count())
+	
+}
+
+func TestCountDownLatch_manyasync(t *testing.T) {
 	count := 1e6
-	latch1 := New(uint(count*(count+1)/2)) //sum of numbers 1 to count
-	latch2 := New(uint(2*count + 1))
-	latch3 := New(uint(3*count))
+	latch1 := NewCountDownLatch(uint(count*(count+1)/2)) //sum of numbers 1 to count
+	latch2 := NewCountDownLatch(uint(2*count + 1))
+	latch3 := NewCountDownLatch(uint(3*count))
 	for i := 1; i <= int(count); i++ {
 		go func (weight uint) {
 			assertNil(t, latch1.WeightedCountDown(weight))
