@@ -8,7 +8,7 @@ In typical usage, a main goroutine creates the latch with a provided count and p
 
 For example, the following code:
 
-```
+```go
 latch := congo.NewCountDownLatch(3)
 for i := 0; i < 3; i++ {
 	go func() {
@@ -29,7 +29,7 @@ if (latch.WaitTimeout(5*time.Second)) {
 
 Produces output:
 
-```
+```plain
 Counting down
 Counting down
 Counting down
@@ -41,6 +41,7 @@ Count down complete
 `CountDownLatch` is similar to `WaitGroup` in the standard Go `sync` package with a few notable differences:
 
 * Caller can wait with a timeout (`WaitTimeout`) for the count down to complete.
+* Caller can retrieve the current count using `Count` to track the progress of latch count down completion.
 * Couple of extra ways to `CountDown`:
   * `WeightedCountDown` reduces the remaining count by a specified number.
   * `Complete` reduces the remaining count to 0 and signals any waiting goroutines immediately.
@@ -50,4 +51,6 @@ Count down complete
 ## Documentation
 
 [![GoDoc](https://godoc.org/github.com/nvn1729/congo?status.svg)](https://godoc.org/github.com/nvn1729/congo)
+
+[Blog Post](https://naveensunkavally.com/2018/06/21/writing-robust-concurrency-tests-in-go-using-a-countdownlatch/)
 

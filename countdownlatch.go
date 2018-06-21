@@ -16,6 +16,8 @@ import (
 //
 // - It has the ability to wait with a timeout (WaitTimeout) for latch to complete.
 //
+// - It has the ability to get the current count using the Count method.
+//
 // - It has ability to do a WeightedCountDown, i.e. reduce the remaining count by more than 1.
 //
 // - It has the ability to Complete the count down immediately, unblocking any goroutines waiting on Wait
