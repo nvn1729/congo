@@ -12,10 +12,10 @@ For example, the following code:
 latch := congo.NewCountDownLatch(3)
 for i := 0; i < 3; i++ {
 	go func() {
+		defer latch.CountDown() // count down after work is complete
 		// do work
 		// ...
 		fmt.Println("Counting down")
-		latch.CountDown() // done with work
 	} ()
 }
 	
@@ -47,6 +47,19 @@ Count down complete
   * `Complete` reduces the remaining count to 0 and signals any waiting goroutines immediately.
 * The starting count is set once at the time of creating the CountDownLatch. This avoids the potential for misuse of the `WaitGroup.Add` function, which should only be invoked in the main goroutine.
 
+## Installation
+
+To install congo, use `go get`:
+
+```go
+go get github.com/nvn1729/congo
+```
+
+Then import the `github.com/nvn1729/congo` into your code:
+
+```go
+import "github.com/nvn1729/congo"
+```
 
 ## Documentation
 

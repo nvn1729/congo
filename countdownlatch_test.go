@@ -10,10 +10,11 @@ func ExampleCountDownLatch() {
 	latch := NewCountDownLatch(3)
 	for i := 0; i < 3; i++ {
 		go func() {
+			defer latch.CountDown() // count down after work is complete
 			// do work
 			// ...
 			fmt.Println("Counting down")
-			latch.CountDown() // done with work
+			
 		} ()
 	}
 	
